@@ -4,7 +4,7 @@ const model = {
     find: () => db.select('*').from('schemes'),
 
     findById: id => {
-        const scheme = db.select('*').from('schemes').where({ id: id });
+        const scheme = db.select('*').from('schemes').where({ id });
         // should I be using try/catch here instead of if?
         if (!scheme) { return null };
         return scheme;
@@ -26,7 +26,7 @@ const model = {
     },
 
     update: (changes, id) => {
-        const count = db.where({ id: id }).update(changes).into('schemes');
+        const count = db.where({ id }).update(changes).into('schemes');
         if (!count) { return null };
         return this.findById(id);
     },
@@ -34,7 +34,8 @@ const model = {
     remove: id => {
         const scheme = this.findById(id);
         if (!scheme) { return null };
-        db('schemes').where({ id: id }).del();
+        const schemesCount = db('schemes').where({ id }).del();
+        const stepsCount = db('steps').where({ scheme_id: id }).del();
         return scheme;
     }
 };
