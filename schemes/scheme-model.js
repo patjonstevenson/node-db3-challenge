@@ -37,7 +37,18 @@ const model = {
         const schemesCount = db('schemes').where({ id }).del();
         const stepsCount = db('steps').where({ scheme_id: id }).del();
         return scheme;
+    },
+
+    addStep: (step, scheme_id) => {
+        const newStep = {
+            ...step,
+            scheme_id
+        };
+        const newStepId = db.insert(newStep, 'id').into('steps');
+        const addedStep = db('steps').select('*').where({ id: newStepId });
+        return newStepId;
     }
+
 };
 
 module.exports = model;
